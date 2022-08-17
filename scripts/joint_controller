@@ -1,0 +1,104 @@
+#!/usr/bin/env python3
+
+import rospy
+from sensor_msgs.msg import JointState
+import math
+
+if_joint_topic_is_published=True
+
+def main():
+    check_value=0
+
+    # Initialize the node
+    rospy.init_node("JointStates")
+    # Publisher object
+    publisherObject = rospy.Publisher("joint_states", JointState, queue_size=10)
+    # Rate controller
+    rateController = rospy.Rate(5)
+    # Variables
+    msg = JointState()
+    msg.header.frame_id = ""
+    msg.name = ["joint_1_s", "joint_2_l", "joint_3_u", "joint_4_r", "joint_5_b", "joint_6_t"]       # Joint name (array assignment)
+    angle = 1.00
+    angle1 = 1.9
+    increment = True
+    # Main loop
+    
+
+    get_published_topics=rospy.get_published_topics()
+    print(len(get_published_topics))
+    for i in range (0, len(get_published_topics)):
+        if (get_published_topics[i]== '/joint_states', 'sensor_msgs/JointState'):
+            if_joint_topic_is_published=True
+        else:
+            if_joint_topic_is_published=False
+
+    
+    while(not rospy.is_shutdown()):
+        #if (if_joint_topic_is_published==False):
+            # Initialize the time of publishing
+         while (check_value<=300):
+            msg.header.stamp = rospy.Time.now()
+            # Joint angle values
+            msg.position = [angle, angle, 0, 0, 0, 0]
+            
+            # Publish message
+            publisherObject.publish(msg)
+            
+            # Increase sequence
+            
+            
+            msg.header.seq += 1
+            # Change angle value
+            """
+            if increment:
+                angle += 90.0/20.0 * math.pi / 180.0
+                #angle1 += 90.0/20.0 * math.pi / 180.0
+            else:
+                angle -= 90.0/20.0 * math.pi / 180.0
+                #angle1 -= 90.0/20.0 * math.pi / 180.0
+            if angle > math.pi or angle < - math.pi:
+                increment = not increment
+            """
+        # Delay execution to match rate
+            rateController.sleep()
+            check_value+=1    
+        #else:
+            # Initialize the time of publishing
+         while (not check_value<=300):
+            if increment:
+                angle += 90.0/20.0 * math.pi / 180.0
+                #angle1 += 90.0/20.0 * math.pi / 180.0
+            else:
+                angle -= 90.0/20.0 * math.pi / 180.0
+                #angle1 -= 90.0/20.0 * math.pi / 180.0
+            if angle > math.pi or angle < - math.pi:
+                increment = not increment    
+            """
+            msg.header.stamp = rospy.Time.now()
+            #  Joint angle values
+            msg.position = [0, 0, 0, 0, 0, 0]
+            # Publish message
+            publisherObject.publish(msg)
+            # Increase sequence
+        
+            msg.header.seq += 1
+            # Change angle value
+            if increment:
+                angle += 90.0/20.0 * math.pi / 180.0
+                #angle1 += 90.0/20.0 * math.pi / 180.0
+            else:
+                angle -= 90.0/20.0 * math.pi / 180.0
+                #angle1 -= 90.0/20.0 * math.pi / 180.0
+            if angle > math.pi or angle < - math.pi:
+                increment = not increment
+            # Delay execution to match rate
+            rateController.sleep()
+            """
+        
+
+if __name__ == "__main__":
+    try:
+        main()
+    except rospy.ROSInternalException:
+        rospy.logfatal("Node crashed due to an internal exception")

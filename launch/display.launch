@@ -1,0 +1,52 @@
+<launch>
+  <arg
+    name="model" />
+  <arg
+    name="gui"
+    default="False" />
+  <param
+    name="robot_description"
+    textfile="$(find gp7_visualization)/urdf/gp7_robot.urdf" />
+  <param
+    name="use_gui"
+    value="$(arg gui)" />
+  
+  
+<!-- 
+  <node
+    name="joint_state_publisher_gui"
+    pkg="joint_state_publisher"
+    type="joint_state_publisher" />
+-->    
+  
+    
+    
+  <node
+    name="robot_state_publisher"
+    pkg="robot_state_publisher"
+    type="robot_state_publisher"> 
+    
+    <!--
+    <rosparam param="source_list">["gp7_visualization/joint_states"]</rosparam>
+    -->
+    
+    </node>
+  <node
+    name="rviz"
+    pkg="rviz"
+    type="rviz"
+    args="-d $(find gp7_visualization)/rviz/urdf.rviz" />
+
+  <node
+    name="joint_controller"
+    pkg="gp7_visualization"
+    type="joint_controller" >
+    
+    <!--
+    <remap from="joint_states" to="/gp7_visualization/joint_states"/>
+    
+    <rosparam param="source_list">["/joint_states"]</rosparam>
+    -->
+   </node>
+
+</launch>

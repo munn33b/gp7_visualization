@@ -1,0 +1,18 @@
+<launch>
+
+<!-- Opens gazebo -->
+<include file="$(find gazebo_ros)/launch/empty_world.launch">
+	<arg name="world_name" value="/home/muneeb/catkin_ws/src/gazebo_practice/worlds/robotic.world" />
+</include>
+
+<!-- URDF -> Param Server -->
+<param name="robot_description" textfile="$(find gp7_visualization)/urdf/gp7_robot.urdf" />
+
+<!-- Spawner -->
+<node
+ name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" 
+ args="-urdf -param robot_description -model gp7_robot -x 0 -y 0 -z 0"
+ respawn="false" output="screen" />
+  
+
+</launch>
